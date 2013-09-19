@@ -1,0 +1,101 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Public ELB with HTTP/HTTPS termination support",
+
+  "Parameters": {
+
+    "SSLCertARN": {
+      "Type": "String",
+      "Description": "The ARN of the SSL certificate to use"
+    },
+    "InstancePort": {
+      "Type": "String",
+      "Default": "80",
+      "Description": "Port to forward traffic to"
+    },
+    "HealthCheckURL": {
+      "Type": "String",
+      "Default": "/status",
+      "Description": "Relative URL (i.e. /status) for the health check"
+    },
+    "HealthCheckProtocol": {
+      "Type": "String",
+      "Default": "HTTP",
+      "Description": "Protocol to use for health checks"
+    },
+    "HealthCheckResponseTimeout": {
+      "Type": "String",
+      "Default": "5",
+      "Description": "Seconds before timing out health checks"
+    },
+    "HealthCheckInterval": {
+      "Type": "String",
+      "Default": "10",
+      "Description": "Interval, in seconds, to execute health checks"
+    },
+    "HealthCheckHealthyThreshold": {
+      "Type": "String",
+      "Default": "3",
+      "Description": "Number of consecutive succesful health checks before marking as healthy"
+    },
+    "HealthCheckUnhealthyThreshold": {
+      "Type": "String",
+      "Default": "5",
+      "Description": "Number of consecutive unsuccesful health checks before marking as unhealthy"
+    },
+    "Description": {
+      "Type": "String",
+      "Description": "What is the purpose of this ELB"
+    }
+  },
+
+  "Resources": {
+    "ELB": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "AvailabilityZones": { "Fn::GetAZs": "" },
+        "Listeners": [
+          {
+            "LoadBalancerPort": "80",
+            "InstancePort": { "Ref": "InstancePort" },
+            "Protocol": "HTTP"
+          },
+          {
+            "LoadBalancerPort": "443",
+            "InstancePort": { "Ref": "InstancePort" },
+            "Protocol": "HTTPS",
+            "SSLCertificateId": { "Ref": "SSLCertARN" }
+          }
+        ],
+        "HealthCheck": {
+          "Target": { "Fn::Join": [ "", [ { "Ref": "HealthCheckProtocol" }, ":",
+                                          { "Ref": "InstancePort" },
+                                          { "Ref": "HealthCheckURL" } ] ] },
+          "HealthyThreshold": { "Ref": "HealthCheckHealthyThreshold" },
+          "UnhealthyThreshold": { "Ref": "HealthCheckUnhealthyThreshold" },
+          "Interval": { "Ref": "HealthCheckInterval" },
+          "Timeout": { "Ref": "HealthCheckResponseTimeout" }
+        }
+      }
+    }
+  },
+
+  "Outputs": {
+    "LoadBalancerName": {
+      "Description": "Name of the ELB",
+      "Value": { "Ref": "ELB" }
+    },
+    "LoadBalancerDNSName": {
+      "Description": "DNS name of ELB",
+      "Value": { "Fn::GetAtt": [ "ELB", "DNSName" ]}
+    },
+    "LoadBalancerSourceSecurityGroupName": {
+      "Description": "Name of the security group which represents traffic from this ELB",
+      "Value": { "Fn::GetAtt": [ "ELB", "SourceSecurityGroup.GroupName" ] }
+    },
+    "LoadBalancerSourceSecurityGroupOwnerAlias": {
+      "Description": "The owner alias of the security group which represents traffic from this ELB",
+      "Value": { "Fn::GetAtt": [ "ELB", "SourceSecurityGroup.OwnerAlias" ] }
+    }
+  }
+}
