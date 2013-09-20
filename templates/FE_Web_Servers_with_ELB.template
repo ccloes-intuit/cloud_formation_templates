@@ -1,0 +1,331 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "This template enables roles and features of Windows Server. **WARNING** This template creates Amazon EC2 Windows instance and related resources. You will be billed for the AWS resources used if you create a stack from this template.",
+
+  "Parameters" : {
+    "KeyPairName" : {
+      "Description" : "Name of an existing Amazon EC2 key pair for RDP access",
+      "Type" : "String"
+    },
+    "InstanceType" : {
+      "Description" : "Amazon EC2 instance type",
+      "Type" : "String",
+      "Default" : "m1.small",
+      "AllowedValues" : [ "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m2.4xlarge", "c1.medium", "c1.xlarge"]
+    },
+    "Web1Roles" : {
+      "Description" : "A SPACE seperated list of roles that you want to enable on this instance. Valid values are AD-Certificate, AD-Domain-Services, ADLDS, DHCP, DNS, Fax, File-Services, NPAS, Print-Services, Web-Server, and WDS.",
+      "Type" : "String",
+      "Default" : "Web-Server",
+      "AllowedPattern" : "(((AD\\-Certificate)|(AD\\-Domain\\-Services)|(ADLDS)|(DHCP)|(DNS)|(Fax)|(File\\-Services)|(NPAS)|(Print\\-Services)|(Web\\-Server)|(WDS))( ((AD\\-Certificate)|(AD\\-Domain\\-Services)|(ADLDS)|(DHCP)|(DNS)|(Fax)|(File\\-Services)|(NPAS)|(Print\\-Services)|(Web\\-Server)|(WDS)))*)|(None)"
+    },
+    "Web1Features" : {
+      "Description" : "A SPACE seperated list of features that you want to enable on this instance. Valid values are NET-Framework, BITS, BitLocker, BranchCache, CMAK, Desktop-Experience, DAMC, Failover-Clustering, GPMC, Ink-Handwriting, Internet-Print-Client, ISNS, LPR-Port-Monitor, MSMQ, Multipath-IO, NLB, PNRP, qWave, Remote-Assistance, RDC, RPC-over-HTTP-Proxy, Simple-TCPIP, SMTP-Server, SNMP-Services, Storage-Mgr-SANS, Subsystem-UNIX-Apps, Telnet-Client, Telnet-Server, TFTP-Client, Biometric-Framework, Windows-Internal-DB, PowerShell-ISE, Backup-Features, Migration, WSRM, TIFF-IFilter, WinRM-IIS-Ext, WINS-Server, Wireless-Networking, and XPS-Viewer.",
+      "Type" : "String",
+      "Default" : "None",
+      "AllowedPattern" : "(((NET\\-Framework)|(BITS)|(BitLocker)|(BranchCache)|(CMAK)|(Desktop\\-Experience)|(DAMC)|(Failover\\-Clustering)|(GPMC)|(Ink\\-Handwriting)|(Internet\\-Print\\-Client)|(ISNS)|(LPR\\-Port\\-Monitor)|(MSMQ)|(Multipath\\-IO)|(NLB)|(PNRP)|(qWave)|(Remote\\-Assistance)|(RDC)|(RPC\\-over\\-HTTP\\-Proxy)|(Simple\\-TCPIP)|(SMTP\\-Server)|(SNMP\\-Services)|(Storage\\-Mgr\\-SANS)|(Subsystem\\-UNIX\\-Apps)|(Telnet\\-Client)|(Telnet\\-Server)|(TFTP\\-Client)|(Biometric\\-Framework)|(Windows\\-Internal\\-DB)|(PowerShell\\-ISE)|(Backup\\-Features)|(Migration)|(WSRM)|(TIFF\\-IFilter)|(WinRM\\-IIS\\-Ext)|(WINS\\-Server)|(Wireless\\-Networking)|(XPS\\-Viewer))( ((NET\\-Framework)|(BITS)|(BitLocker)|(BranchCache)|(CMAK)|(Desktop\\-Experience)|(DAMC)|(Failover\\-Clustering)|(GPMC)|(Ink\\-Handwriting)|(Internet\\-Print\\-Client)|(ISNS)|(LPR\\-Port\\-Monitor)|(MSMQ)|(Multipath\\-IO)|(NLB)|(PNRP)|(qWave)|(Remote\\-Assistance)|(RDC)|(RPC\\-over\\-HTTP\\-Proxy)|(Simple\\-TCPIP)|(SMTP\\-Server)|(SNMP\\-Services)|(Storage\\-Mgr\\-SANS)|(Subsystem\\-UNIX\\-Apps)|(Telnet\\-Client)|(Telnet\\-Server)|(TFTP\\-Client)|(Biometric\\-Framework)|(Windows\\-Internal\\-DB)|(PowerShell\\-ISE)|(Backup\\-Features)|(Migration)|(WSRM)|(TIFF\\-IFilter)|(WinRM\\-IIS\\-Ext)|(WINS\\-Server)|(Wireless\\-Networking)|(XPS\\-Viewer)))*( )*)|(None)"
+    },
+    "Web2Roles" : {
+      "Description" : "A SPACE seperated list of roles that you want to enable on this instance. Valid values are AD-Certificate, AD-Domain-Services, ADLDS, DHCP, DNS, Fax, File-Services, NPAS, Print-Services, Web-Server, and WDS.",
+      "Type" : "String",
+      "Default" : "Web-Server",
+      "AllowedPattern" : "(((AD\\-Certificate)|(AD\\-Domain\\-Services)|(ADLDS)|(DHCP)|(DNS)|(Fax)|(File\\-Services)|(NPAS)|(Print\\-Services)|(Web\\-Server)|(WDS))( ((AD\\-Certificate)|(AD\\-Domain\\-Services)|(ADLDS)|(DHCP)|(DNS)|(Fax)|(File\\-Services)|(NPAS)|(Print\\-Services)|(Web\\-Server)|(WDS)))*)|(None)"
+    },
+    "Web2Features" : {
+      "Description" : "A SPACE seperated list of features that you want to enable on this instance. Valid values are NET-Framework, BITS, BitLocker, BranchCache, CMAK, Desktop-Experience, DAMC, Failover-Clustering, GPMC, Ink-Handwriting, Internet-Print-Client, ISNS, LPR-Port-Monitor, MSMQ, Multipath-IO, NLB, PNRP, qWave, Remote-Assistance, RDC, RPC-over-HTTP-Proxy, Simple-TCPIP, SMTP-Server, SNMP-Services, Storage-Mgr-SANS, Subsystem-UNIX-Apps, Telnet-Client, Telnet-Server, TFTP-Client, Biometric-Framework, Windows-Internal-DB, PowerShell-ISE, Backup-Features, Migration, WSRM, TIFF-IFilter, WinRM-IIS-Ext, WINS-Server, Wireless-Networking, and XPS-Viewer.",
+      "Type" : "String",
+      "Default" : "None",
+      "AllowedPattern" : "(((NET\\-Framework)|(BITS)|(BitLocker)|(BranchCache)|(CMAK)|(Desktop\\-Experience)|(DAMC)|(Failover\\-Clustering)|(GPMC)|(Ink\\-Handwriting)|(Internet\\-Print\\-Client)|(ISNS)|(LPR\\-Port\\-Monitor)|(MSMQ)|(Multipath\\-IO)|(NLB)|(PNRP)|(qWave)|(Remote\\-Assistance)|(RDC)|(RPC\\-over\\-HTTP\\-Proxy)|(Simple\\-TCPIP)|(SMTP\\-Server)|(SNMP\\-Services)|(Storage\\-Mgr\\-SANS)|(Subsystem\\-UNIX\\-Apps)|(Telnet\\-Client)|(Telnet\\-Server)|(TFTP\\-Client)|(Biometric\\-Framework)|(Windows\\-Internal\\-DB)|(PowerShell\\-ISE)|(Backup\\-Features)|(Migration)|(WSRM)|(TIFF\\-IFilter)|(WinRM\\-IIS\\-Ext)|(WINS\\-Server)|(Wireless\\-Networking)|(XPS\\-Viewer))( ((NET\\-Framework)|(BITS)|(BitLocker)|(BranchCache)|(CMAK)|(Desktop\\-Experience)|(DAMC)|(Failover\\-Clustering)|(GPMC)|(Ink\\-Handwriting)|(Internet\\-Print\\-Client)|(ISNS)|(LPR\\-Port\\-Monitor)|(MSMQ)|(Multipath\\-IO)|(NLB)|(PNRP)|(qWave)|(Remote\\-Assistance)|(RDC)|(RPC\\-over\\-HTTP\\-Proxy)|(Simple\\-TCPIP)|(SMTP\\-Server)|(SNMP\\-Services)|(Storage\\-Mgr\\-SANS)|(Subsystem\\-UNIX\\-Apps)|(Telnet\\-Client)|(Telnet\\-Server)|(TFTP\\-Client)|(Biometric\\-Framework)|(Windows\\-Internal\\-DB)|(PowerShell\\-ISE)|(Backup\\-Features)|(Migration)|(WSRM)|(TIFF\\-IFilter)|(WinRM\\-IIS\\-Ext)|(WINS\\-Server)|(Wireless\\-Networking)|(XPS\\-Viewer)))*( )*)|(None)"
+    }
+  },
+
+  "Mappings" : {
+    "AWSInstanceType2Arch" : {
+      "m1.small"   : { "Arch" : "64" },
+      "m1.medium"  : { "Arch" : "64" },
+      "m1.large"   : { "Arch" : "64" },
+      "m1.xlarge"  : { "Arch" : "64" },
+      "m2.xlarge"  : { "Arch" : "64" },
+      "m2.2xlarge" : { "Arch" : "64" },
+      "m2.4xlarge" : { "Arch" : "64" },
+      "c1.medium"  : { "Arch" : "64" },
+      "c1.xlarge"  : { "Arch" : "64" }
+    },
+    "AWSRegionArch2AMI" : {
+      "us-east-1"      : {"64" : "ami-7f236a16"},
+      "us-west-2"      : {"64" : "ami-54de4164"},
+      "us-west-1"      : {"64" : "ami-d0261395"},
+      "eu-west-1"      : {"64" : "ami-423dd835"},
+      "ap-southeast-1" : {"64" : "ami-048dc656"},
+      "ap-southeast-2" : {"64" : "ami-f59e03cf"},
+      "ap-northeast-1" : {"64" : "ami-69dd4168"},
+      "sa-east-1"      : {"64" : "ami-57d4734a"}
+    }
+  },
+
+  "Resources" : {
+
+    "ElasticLoadBalancer" : {
+      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : "" },
+        "Instances" : [ { "Ref" : "Web1Server" },{ "Ref" : "Web2Server" } ],
+        "Listeners" : [ {
+          "LoadBalancerPort" : "80",
+          "InstancePort" : "80",
+          "Protocol" : "HTTP"
+        } ],
+        "HealthCheck" : {
+          "Target" : { "Fn::Join" : [ "", ["HTTP:", "80", "/"]]},
+          "HealthyThreshold" : "3",
+          "UnhealthyThreshold" : "5",
+          "Interval" : "30",
+          "Timeout" : "5"
+        }
+      }
+    },
+
+    "FESecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable RDP",
+        "SecurityGroupIngress" : [
+          {"IpProtocol" : "tcp", "FromPort" : "3389", "ToPort" : "3389", "CidrIp" : "0.0.0.0/0"}
+        ]
+      }
+    },
+
+    "Web1Server": {
+      "Type" : "AWS::EC2::Instance",
+      "Metadata" : {
+        "AWS::CloudFormation::Init" : {
+          "config" : {
+            "files" : {
+              "c:\\cfn\\cfn-hup.conf" : {
+                "content" : { "Fn::Join" : ["", [
+                  "[main]\n",
+                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
+                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                  ]]}
+              },
+              "c:\\cfn\\hooks.d\\cfn-auto-reloader.conf" : {
+                "content": { "Fn::Join" : ["", [
+                  "[cfn-auto-reloader-hook]\n",
+                  "triggers=post.update\n",
+                  "path=Resources.Web1Server.Metadata.AWS::CloudFormation::Init\n",
+                  "action=cfn-init.exe -v -s ", { "Ref" : "AWS::StackId" },
+                      " -r Web1Server",
+                      " --region ", { "Ref" : "AWS::Region" }, "\n"
+                ]]}
+              }
+            },
+            
+            "commands" : {
+              "1-install-roles" : {
+                "command" : { "Fn::Join" : [ "", [
+                  "if not \"None\" EQU \"",
+                  { "Ref" : "Web1Roles" },
+                  "\" (servermanagercmd -install ",
+                  { "Ref" : "Web1Roles" },
+                  " -restart)"]]
+                }
+              },
+              "2-install-features" : {
+                "command" : { "Fn::Join" : [ "", [
+                  "if not \"None\" EQU \"",
+                  { "Ref" : "Web1Features" },
+                  "\" (servermanagercmd -install ",
+                  { "Ref" : "Web1Features" },
+                  " -restart)"]]
+                }
+              },
+              "3-signal-success" : {
+                "command" : { "Fn::Join" : [ "", [
+                  "cfn-signal.exe -e %ERRORLEVEL% \"",
+                  { "Fn::Base64" : { "Ref" : "WindowsServerWaitHandle" }},
+                  "\""]]
+                }
+              }
+            },
+            
+            "services" : {
+              "windows" : {
+                "cfn-hup" : {
+                  "enabled" : "true",
+                  "ensureRunning" : "true",
+                  "files" : ["c:\\cfn\\cfn-hup.conf", "c:\\cfn\\hooks.d\\cfn-auto-reloader.conf"]
+                }
+              }
+            }
+          }
+        }
+      },
+      
+      "Properties": {
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" }, { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+        "SecurityGroups" : [ {"Ref" : "FESecurityGroup"} ],
+        "KeyName" : { "Ref" : "KeyPairName" },
+        "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
+            "<script>\n",
+
+            "cfn-init.exe -v -s ", { "Ref" : "AWS::StackId" }, 
+            " -r Web1Server",
+            " --region ", { "Ref" : "AWS::Region" }, "\n",
+          
+            "</script>"
+        ]]}}
+      }
+    },
+
+    "Web2Server": {
+      "Type" : "AWS::EC2::Instance",
+      "Metadata" : {
+        "AWS::CloudFormation::Init" : {
+          "config" : {
+            "files" : {
+              "c:\\cfn\\cfn-hup.conf" : {
+                "content" : { "Fn::Join" : ["", [
+                  "[main]\n",
+                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
+                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                  ]]}
+              },
+              "c:\\cfn\\hooks.d\\cfn-auto-reloader.conf" : {
+                "content": { "Fn::Join" : ["", [
+                  "[cfn-auto-reloader-hook]\n",
+                  "triggers=post.update\n",
+                  "path=Resources.Web2Server.Metadata.AWS::CloudFormation::Init\n",
+                  "action=cfn-init.exe -v -s ", { "Ref" : "AWS::StackId" },
+                      " -r Web2Server",
+                      " --region ", { "Ref" : "AWS::Region" }, "\n"
+                ]]}
+              }
+            },
+            
+            "commands" : {
+              "1-install-roles" : {
+                "command" : { "Fn::Join" : [ "", [
+                  "if not \"None\" EQU \"",
+                  { "Ref" : "Web2Roles" },
+                  "\" (servermanagercmd -install ",
+                  { "Ref" : "Web2Roles" },
+                  " -restart)"]]
+                }
+              },
+              "2-install-features" : {
+                "command" : { "Fn::Join" : [ "", [
+                  "if not \"None\" EQU \"",
+                  { "Ref" : "Web2Features" },
+                  "\" (servermanagercmd -install ",
+                  { "Ref" : "Web2Features" },
+                  " -restart)"]]
+                }
+              },
+              "3-signal-success" : {
+                "command" : { "Fn::Join" : [ "", [
+                  "cfn-signal.exe -e %ERRORLEVEL% \"",
+                  { "Fn::Base64" : { "Ref" : "WindowsServerWaitHandle" }},
+                  "\""]]
+                }
+              }
+            },
+            
+            "services" : {
+              "windows" : {
+                "cfn-hup" : {
+                  "enabled" : "true",
+                  "ensureRunning" : "true",
+                  "files" : ["c:\\cfn\\cfn-hup.conf", "c:\\cfn\\hooks.d\\cfn-auto-reloader.conf"]
+                }
+              }
+            }
+          }
+        }
+      },
+      
+      "Properties": {
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" }, { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+        "SecurityGroups" : [ {"Ref" : "FESecurityGroup"} ],
+        "KeyName" : { "Ref" : "KeyPairName" },
+        "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
+            "<script>\n",
+
+            "cfn-init.exe -v -s ", { "Ref" : "AWS::StackId" }, 
+            " -r Web2Server",
+            " --region ", { "Ref" : "AWS::Region" }, "\n",
+          
+            "</script>"
+        ]]}}
+      }
+    },
+
+    "Web1ServerEndpoint" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "InstanceId" : { "Ref" : "Web1Server" }
+      }
+    },
+
+    "Web2ServerEndpoint" : {
+      "Type" : "AWS::EC2::EIP",
+      "Properties" : {
+        "InstanceId" : { "Ref" : "Web2Server" }
+      }
+    },
+
+    "WindowsServerWaitHandle" : {
+      "Type" : "AWS::CloudFormation::WaitConditionHandle"
+    },
+
+    "WindowsServerWaitCondition" : {
+      "Type" : "AWS::CloudFormation::WaitCondition",
+      "DependsOn" : "WindowsServer",
+      "Properties" : {
+        "Handle" : {"Ref" : "WindowsServerWaitHandle"},
+        "Timeout" : "1800"
+      }
+    }
+  },
+  
+  "Outputs" : {
+    "ELBId" : }
+      "Description" : "Id of the ELB for the web server traffic",
+      "Value" : { "Ref" : "ElasticLoadBalancer" }
+    },
+    "Web1Id" : {
+      "Description" : "InstanceId of the newly created EC2 instance",
+      "Value" : { "Ref" : "Web1Server" }
+    },
+    "Web2Id" : {
+      "Description" : "InstanceId of the newly created EC2 instance",
+      "Value" : { "Ref" : "Web2Server" }
+    },
+   "Web1ServerEIP" : {
+      "Value" : { "Ref" : "Web1ServerEndpoint" },
+      "Description" : "Elastic IP address of Server" 
+    },
+    "Web1RolesEnabled" : {
+      "Value" : { "Ref" : "Web1Roles" },
+      "Description" : "Roles enabled on this instance."
+    },
+    "Web1FeaturesEnabled" : {
+      "Value" : { "Ref" : "Web1Features" },
+      "Description" : "Features enabled on this instance."
+    },
+     "Web2ServerEIP" : {
+      "Value" : { "Ref" : "Web2ServerEndpoint" },
+      "Description" : "Elastic IP address of Server" 
+    },
+    "Web2RolesEnabled" : {
+      "Value" : { "Ref" : "Web2Roles" },
+      "Description" : "Roles enabled on this instance."
+    },
+    "Web2FeaturesEnabled" : {
+      "Value" : { "Ref" : "Web2Features" },
+      "Description" : "Features enabled on this instance."
+    }
+  }  
+}
