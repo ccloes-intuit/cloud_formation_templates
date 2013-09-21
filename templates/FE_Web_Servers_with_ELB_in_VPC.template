@@ -5,7 +5,7 @@
 
   "Parameters" : {
     "VpcId" : {
-      "Type" : {
+      "Type" : "String", 
       "Description" : "VpcId of your existing Virtual Private Cloud (VPC)",
       "Default" : "vpc-c5d4e1ad"
     },
@@ -13,7 +13,7 @@
       "Type" : "String",
       "Description" : "SubnetId of an existing subnet in your VPC",
       "Default" : "subnet-d3d4e1bb"
-    } 
+    }, 
     "KeyName" : {
       "Description" : "Name of an existing Amazon EC2 key pair for RDP access",
       "Type" : "String"
