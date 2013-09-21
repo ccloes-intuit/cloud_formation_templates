@@ -91,7 +91,9 @@
       "Properties" : {
         "GroupDescription" : "Enable RDP",
         "SecurityGroupIngress" : [
-          {"IpProtocol" : "tcp", "FromPort" : "3389", "ToPort" : "3389", "CidrIp" : "0.0.0.0/0"}
+          {"IpProtocol" : "tcp", "FromPort" : "3389", "ToPort" : "3389", "CidrIp" : "0.0.0.0/0"},
+          {"IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "CidrIp" : "0.0.0.0/0"},
+          {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"}
         ]
       }
     },
@@ -282,7 +284,7 @@
 
     "WindowsServerWaitCondition" : {
       "Type" : "AWS::CloudFormation::WaitCondition",
-      "DependsOn" : "WindowsServer",
+      "DependsOn" : "Web2Server",
       "Properties" : {
         "Handle" : {"Ref" : "WindowsServerWaitHandle"},
         "Timeout" : "1800"
@@ -291,7 +293,7 @@
   },
   
   "Outputs" : {
-    "ELBId" : }
+    "ELBId" : {
       "Description" : "Id of the ELB for the web server traffic",
       "Value" : { "Ref" : "ElasticLoadBalancer" }
     },
