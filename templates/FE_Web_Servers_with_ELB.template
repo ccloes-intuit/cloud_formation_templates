@@ -4,7 +4,7 @@
   "Description" : "This template enables roles and features of Windows Server. **WARNING** This template creates Amazon EC2 Windows instance and related resources. You will be billed for the AWS resources used if you create a stack from this template.",
 
   "Parameters" : {
-    "KeyPairName" : {
+    "KeyName" : {
       "Description" : "Name of an existing Amazon EC2 key pair for RDP access",
       "Type" : "String"
     },
@@ -168,7 +168,7 @@
         "InstanceType" : { "Ref" : "InstanceType" },
         "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" }, { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
         "SecurityGroups" : [ {"Ref" : "FESecurityGroup"} ],
-        "KeyName" : { "Ref" : "KeyPairName" },
+        "KeyName" : { "Ref" : "KeyName" },
         "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
             "<script>\n",
 
@@ -251,7 +251,7 @@
         "InstanceType" : { "Ref" : "InstanceType" },
         "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" }, { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
         "SecurityGroups" : [ {"Ref" : "FESecurityGroup"} ],
-        "KeyName" : { "Ref" : "KeyPairName" },
+        "KeyName" : { "Ref" : "KeyName" },
         "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
             "<script>\n",
 
