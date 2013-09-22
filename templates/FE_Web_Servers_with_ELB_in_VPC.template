@@ -41,6 +41,16 @@
   },
 
   "Mappings" : {
+    "AWSNATAMI" : {
+      "us-east-1"      : { "AMI" : "ami-c6699baf" },
+      "us-west-2"      : { "AMI" : "ami-52ff7262" },
+      "us-west-1"      : { "AMI" : "ami-3bcc9e7e" },
+      "eu-west-1"      : { "AMI" : "ami-0b5b6c7f" },
+      "ap-southeast-1" : { "AMI" : "ami-02eb9350" },
+      "ap-southeast-2" : { "AMI" : "ami-ab990e91" },
+      "ap-northeast-1" : { "AMI" : "ami-14d86d15" },
+      "sa-east-1"      : { "AMI" : "ami-0439e619" }
+    },
     "AWSInstanceType2Arch" : {
       "m1.small"   : { "Arch" : "64" },
       "m1.medium"  : { "Arch" : "64" },
@@ -337,9 +347,9 @@
         "GroupDescription" : "Enable internal access to the NAT device",
         "VpcId" : { "Ref" : "VPC" },
         "SecurityGroupIngress" : [
-           { "IpProtocol" : "tcp", "FromPort" : "80",  "ToPort" : "80",  "CidrIp" : "0.0.0.0/0"} ,
-           { "IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "CidrIp" : "0.0.0.0/0"} ,
-           { "IpProtocol" : "tcp", "FromPort" : "3389",  "ToPort" : "3389",  "CidrIp" : "0.0.0.0/0"} ],
+           { "IpProtocol" : "tcp", "FromPort" : "80",  "ToPort" : "80",  "CidrIp" : "0.0.0.0/0" } ,
+           { "IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "CidrIp" : "0.0.0.0/0" } ,
+           { "IpProtocol" : "tcp", "FromPort" : "3389",  "ToPort" : "3389",  "CidrIp" : "0.0.0.0/0" } ],
         "SecurityGroupEgress" : [
            { "IpProtocol" : "tcp", "FromPort" : "80",  "ToPort" : "80",  "CidrIp" : "0.0.0.0/0"} ,
            { "IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "CidrIp" : "0.0.0.0/0"} ]
@@ -403,35 +413,19 @@
       }
     },
 
-    "ElasticLoadBalancer" : {
-      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
-      "Properties" : {
-        "Subnets" : [ { "Ref" : "SubnetId" } ],
-        "Instances" : [ { "Ref" : "Web1Server" },{ "Ref" : "Web2Server" } ],
-        "Listeners" : [ {
-          "LoadBalancerPort" : "80",
-          "InstancePort" : "80",
-          "Protocol" : "HTTP"
-        } ],
-        "HealthCheck" : {
-          "Target" : { "Fn::Join" : [ "", ["HTTP:", "80", "/"]]},
-          "HealthyThreshold" : "3",
-          "UnhealthyThreshold" : "5",
-          "Interval" : "30",
-          "Timeout" : "5"
-        }
-      }
-    },
-
     "FESecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
         "VpcId" : { "Ref" : "VPC" },
         "GroupDescription" : "Enable 3389, 80, 443",
         "SecurityGroupIngress" : [
-          {"IpProtocol" : "tcp", "FromPort" : "3389", "ToPort" : "3389", "CidrIp" : "0.0.0.0/0"},
-          {"IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "CidrIp" : "0.0.0.0/0"},
-          {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"}
+          {"IpProtocol" : "tcp", "FromPort" : "3389", "ToPort" : "3389", "SourceSecurityGroupId" : { "Ref" : "TerminalServerSecurityGroup" }},
+          {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "SourceSecurityGroupId" : { "Ref" : "PublicLoadBalancerSecurityGroup" }},
+          {"IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "SourceSecurityGroupId" : { "Ref" : "PublicLoadBalancerSecurityGroup" }}
+        ],
+        "SecurityGroupEgress" : [
+          { "IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0" },
+          { "IpProtocol" : "tcp", "FromPort" : "443", "ToPort" : "443", "CidrIp" : "0.0.0.0/0" }
         ]
       }
     },
