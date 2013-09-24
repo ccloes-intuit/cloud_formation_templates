@@ -18,9 +18,6 @@
     },
     "IPAddress5": {
       "Type": "AWS::EC2::EIP"
-    },
-    "IPAddress6": {
-      "Type": "AWS::EC2::EIP"
     }
   },
 
@@ -39,9 +36,6 @@
     },
     "Web5IPAddress": {
       "Value": { "Ref": "IPAddress5" }
-    },
-    "Web6IPAddress": {
-      "Value": { "Ref": "IPAddress6" }
     }
   }
 }

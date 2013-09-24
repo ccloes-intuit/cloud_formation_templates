@@ -14,6 +14,12 @@
       "Default" : "m1.small",
       "AllowedValues" : [ "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m2.4xlarge", "c1.medium", "c1.xlarge"]
     },
+    "LinuxInstanceType" : {
+      "Description" : "Amazon EC2 instance type",
+      "Type" : "String",
+      "Default" : "m1.small",
+      "AllowedValues" : [ "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m2.4xlarge", "c1.medium", "c1.xlarge"]
+    },
     "Web1Roles" : {
       "Description" : "A SPACE seperated list of roles that you want to enable on this instance. Valid values are AD-Certificate, AD-Domain-Services, ADLDS, DHCP, DNS, Fax, File-Services, NPAS, Print-Services, Web-Server, and WDS.",
       "Type" : "String",
@@ -71,6 +77,30 @@
       "ap-southeast-2" : {"64" : "ami-f59e03cf"},
       "ap-northeast-1" : {"64" : "ami-69dd4168"},
       "sa-east-1"      : {"64" : "ami-57d4734a"}
+    },
+    "AWSLinuxInstanceType2Arch" : {
+      "t1.micro"    : { "Arch" : "64" },
+      "m1.small"    : { "Arch" : "64" },
+      "m1.medium"   : { "Arch" : "64" },
+      "m1.large"    : { "Arch" : "64" },
+      "m1.xlarge"   : { "Arch" : "64" },
+      "m2.xlarge"   : { "Arch" : "64" },
+      "m2.2xlarge"  : { "Arch" : "64" },
+      "m3.xlarge"   : { "Arch" : "64" },
+      "m3.2xlarge"  : { "Arch" : "64" },
+      "m2.4xlarge"  : { "Arch" : "64" },
+      "c1.medium"   : { "Arch" : "64" },
+      "c1.xlarge"   : { "Arch" : "64" }
+    },
+    "AWSLinuxRegionArch2AMI" : {
+      "us-east-1"      : { "32" : "ami-aba768c2", "64" : "ami-81a768e8" },
+      "us-west-1"      : { "32" : "ami-458fd300", "64" : "ami-b18ed2f4" },
+      "us-west-2"      : { "32" : "ami-fcff72cc", "64" : "ami-feff72ce" },
+      "eu-west-1"      : { "32" : "ami-018bb975", "64" : "ami-998bb9ed" },
+      "sa-east-1"      : { "32" : "ami-a039e6bd", "64" : "ami-a239e6bf" },
+      "ap-southeast-1" : { "32" : "ami-425a2010", "64" : "ami-5e5a200c" },
+      "ap-southeast-2" : { "32" : "ami-f98512c3", "64" : "ami-43851279" },
+      "ap-northeast-1" : { "32" : "ami-7871c579", "64" : "ami-7671c577" }
     },
     "SubnetConfig" : { 
       "VPC"     : { "CIDR" : "10.0.0.0/16" },
@@ -386,6 +416,20 @@
       }
     },
 
+    "BESecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "GroupDescription" : "Enable BE ports",
+        "SecurityGroupIngress" : [
+          {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "SourceSecurityGroupId" : { "Ref" : "TerminalServerSecurityGroup" }}
+        ],
+        "SecurityGroupEgress" : [
+          { "IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "0.0.0.0/0" }
+        ]
+      }
+    },
+
     "PublicElasticLoadBalancer" : {
       "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties" : {
@@ -430,7 +474,7 @@
       }
     },
 
-    "Web1Server": {
+   "Web1Server": {
       "Type" : "AWS::EC2::Instance",
       "Metadata" : {
         "AWS::CloudFormation::Init" : {
