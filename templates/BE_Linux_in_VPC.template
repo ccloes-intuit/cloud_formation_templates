@@ -14,14 +14,14 @@
       "Default" : "m1.small",
       "AllowedValues" : [ "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m2.4xlarge", "c1.medium", "c1.xlarge"]
     },
-    "VpcId" : {
+    "SecurityGroupId" : {
       "Type" : "String",
-      "Description" : "VpcId of your existing VPC"
+      "Description" : "SecurityGroupId for instance"
     },
     "SubnetId" : {
       "Type" : "String",
       "Description" : "SubnetId of an existing subnet in your VPC"
-    },
+    }
   },
 
   "Mappings" : {
@@ -54,20 +54,23 @@
   "Resources" : {
 
     "BELinux" : {
-      "Name" : "BELinux",
       "Type" : "AWS::EC2::Instance",
-      "VpcId" : { "Ref" : "VpcId" },
       "Properties" : {
-        "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
+        "SecurityGroupIds" : [ { "Ref" : "SecurityGroupId" } ],
         "SubnetId" : { "Ref" : "SubnetId" },
         "KeyName" : { "Ref" : "KeyName" },
-        "InstanceType" : { "Ref" : "InstanceType" },
+        "InstanceType" : { "Ref" : "LinuxInstanceType" },
         "ImageId" : { "Fn::FindInMap" : [ "AWSLinuxRegionArch2AMI", { "Ref" : "AWS::Region" },
-                                          { "Fn::FindInMap" : [ "AWSLinuxInstanceType2Arch", { "Ref" : "InstanceType" },
+                                          { "Fn::FindInMap" : [ "AWSLinuxInstanceType2Arch", { "Ref" : "LinuxInstanceType" },
                                           "Arch" ] } ] },
-        "UserData" : { "Fn::Base64" : { "Ref" : "WebServerPort" }}
+        "UserData" : { "Fn::Base64" : "80" },
+        "Tags": [ {
+          "Key": "Name",
+          "Value": { "Ref": "AWS::StackName" } ,
+          "PropagateAtLaunch": "true" }
+        ]
       }
-    },
+    }
 
   },
   

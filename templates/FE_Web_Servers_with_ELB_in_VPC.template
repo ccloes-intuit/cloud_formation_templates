@@ -412,7 +412,7 @@
         "GroupDescription" : "Enable access to the TerminalServer host",
         "VpcId" : { "Ref" : "VPC" },
         "SecurityGroupIngress" : [ { "IpProtocol" : "tcp", "FromPort" : "3389",  "ToPort" : "3389",  "CidrIp" : "0.0.0.0/0"} ],
-        "SecurityGroupEgress"  : [ { "IpProtocol" : "tcp", "FromPort" : "3389",  "ToPort" : "3389",  "CidrIp" : { "Fn::FindInMap" : [ "SubnetConfig", "Private", "CIDR" ]}}]
+        "SecurityGroupEgress"  : [ { "IpProtocol" : "tcp", "FromPort" : "0",  "ToPort" : "65535",  "CidrIp" : { "Fn::FindInMap" : [ "SubnetConfig", "Private", "CIDR" ]}}]
       }
     },
 
@@ -425,7 +425,7 @@
           {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "SourceSecurityGroupId" : { "Ref" : "TerminalServerSecurityGroup" }}
         ],
         "SecurityGroupEgress" : [
-          { "IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "0.0.0.0/0" }
+          { "IpProtocol" : "tcp", "FromPort" : "1024", "ToPort" : "65535", "DestinationSecuritGroupId" : { "Ref" : "TerminalServerSecurityGroup" }
         ]
       }
     },
