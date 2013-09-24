@@ -425,7 +425,7 @@
           {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "SourceSecurityGroupId" : { "Ref" : "TerminalServerSecurityGroup" }}
         ],
         "SecurityGroupEgress" : [
-          { "IpProtocol" : "tcp", "FromPort" : "1024", "ToPort" : "65535", "DestinationSecuritGroupId" : { "Ref" : "TerminalServerSecurityGroup" }
+          { "IpProtocol" : "tcp", "FromPort" : "1024", "ToPort" : "65535", "DestinationSecurityGroupId" : { "Ref" : "TerminalServerSecurityGroup" }}
         ]
       }
     },
