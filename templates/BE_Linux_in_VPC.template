@@ -1,0 +1,78 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "This template enables roles and features of Windows Server. **WARNING** This template creates Amazon EC2 Windows instance and related resources. You will be billed for the AWS resources used if you create a stack from this template.",
+
+  "Parameters" : {
+    "KeyName" : {
+      "Description" : "Name of an existing Amazon EC2 key pair for RDP access",
+      "Type" : "String"
+    },
+    "LinuxInstanceType" : {
+      "Description" : "Amazon EC2 instance type",
+      "Type" : "String",
+      "Default" : "m1.small",
+      "AllowedValues" : [ "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m2.4xlarge", "c1.medium", "c1.xlarge"]
+    },
+    "SecurityGroupId" : {
+      "Type" : "String",
+      "Description" : "SecurityGroupId for instance"
+    },
+    "SubnetId" : {
+      "Type" : "String",
+      "Description" : "SubnetId of an existing subnet in your VPC"
+    }
+  },
+
+  "Mappings" : {
+    "AWSLinuxInstanceType2Arch" : {
+      "t1.micro"    : { "Arch" : "64" },
+      "m1.small"    : { "Arch" : "64" },
+      "m1.medium"   : { "Arch" : "64" },
+      "m1.large"    : { "Arch" : "64" },
+      "m1.xlarge"   : { "Arch" : "64" },
+      "m2.xlarge"   : { "Arch" : "64" },
+      "m2.2xlarge"  : { "Arch" : "64" },
+      "m3.xlarge"   : { "Arch" : "64" },
+      "m3.2xlarge"  : { "Arch" : "64" },
+      "m2.4xlarge"  : { "Arch" : "64" },
+      "c1.medium"   : { "Arch" : "64" },
+      "c1.xlarge"   : { "Arch" : "64" }
+    },
+    "AWSLinuxRegionArch2AMI" : {
+      "us-east-1"      : { "64" : "ami-bf5021d6" },
+      "us-west-1"      : { "64" : "ami-5d456c18" },
+      "us-west-2"      : { "64" : "ami-b3bf2f83" }
+    }
+  },
+
+  "Resources" : {
+
+    "BELinux" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "SecurityGroupIds" : [ { "Ref" : "SecurityGroupId" } ],
+        "SubnetId" : { "Ref" : "SubnetId" },
+        "KeyName" : { "Ref" : "KeyName" },
+        "InstanceType" : { "Ref" : "LinuxInstanceType" },
+        "ImageId" : { "Fn::FindInMap" : [ "AWSLinuxRegionArch2AMI", { "Ref" : "AWS::Region" },
+                                          { "Fn::FindInMap" : [ "AWSLinuxInstanceType2Arch", { "Ref" : "LinuxInstanceType" },
+                                          "Arch" ] } ] },
+        "UserData" : { "Fn::Base64" : "80" },
+        "Tags": [ {
+          "Key": "Name",
+          "Value": { "Ref": "AWS::StackName" } ,
+          "PropagateAtLaunch": "true" }
+        ]
+      }
+    }
+
+  },
+  
+  "Outputs" : {
+    "InstanceId" : {
+      "Value" : { "Ref" : "BELinux" },
+      "Description" : "Instance ID of newly created Instance"
+    }
+  }  
+}
