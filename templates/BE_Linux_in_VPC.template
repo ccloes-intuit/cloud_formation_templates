@@ -42,7 +42,7 @@
     "AWSLinuxRegionArch2AMI" : {
       "us-east-1"      : { "64" : "ami-bf5021d6" },
       "us-west-1"      : { "64" : "ami-5d456c18" },
-      "us-west-2"      : { "64" : "ami-b3bf2f83" },
+      "us-west-2"      : { "64" : "ami-b3bf2f83" }
     }
   },
 
