@@ -1,0 +1,41 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "EIP for Classic Instance",
+
+  "Resources": {
+    "IPAddress1": {
+      "Type": "AWS::EC2::EIP"
+    },
+    "IPAddress2": {
+      "Type": "AWS::EC2::EIP"
+    },  
+    "IPAddress3": {
+      "Type": "AWS::EC2::EIP"
+    },
+    "IPAddress4": {
+      "Type": "AWS::EC2::EIP"
+    },
+    "IPAddress5": {
+      "Type": "AWS::EC2::EIP"
+    }
+  },
+
+  "Outputs": {
+    "Web1IPAddress": {
+      "Value": { "Ref": "IPAddress1" }
+    },
+    "Web2IPAddress": {
+      "Value": { "Ref": "IPAddress2" }
+    },
+    "Web3IPAddress": {
+      "Value": { "Ref": "IPAddress3" }
+    },
+    "Web4IPAddress": {
+      "Value": { "Ref": "IPAddress4" }
+    },
+    "Web5IPAddress": {
+      "Value": { "Ref": "IPAddress5" }
+    }
+  }
+}
